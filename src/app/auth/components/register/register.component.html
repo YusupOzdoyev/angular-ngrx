@@ -1,22 +1,28 @@
-<div>
-  <h1>Sign up</h1>
-  <p>
-    <a routerLink="/login">Have an account?</a>
-  </p>
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <fieldset>
-      <input formControlName="username" type="text" placeholder="Username" />
-    </fieldset>
-    <fieldset>
-      <input formControlName="email" type="text" placeholder="Email" />
-    </fieldset>
-    <fieldset>
-      <input
-        formControlName="password"
-        type="password"
-        placeholder="Password"
-      />
-    </fieldset>
-    <button type="submit" [disabled]="isSubmitting$ | async">Sign up</button>
-  </form>
-</div>
+<ng-container *ngIf="data$ | async as data">
+  <div>
+    <h1>Sign up</h1>
+    <p>
+      <a routerLink="/login">Have an account?</a>
+    </p>
+    <mc-backend-error-messages
+      *ngIf="data.backendErrors"
+      [backendErrors]="data.backendErrors"
+    ></mc-backend-error-messages>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <fieldset>
+        <input formControlName="username" type="text" placeholder="Username" />
+      </fieldset>
+      <fieldset>
+        <input formControlName="email" type="text" placeholder="Email" />
+      </fieldset>
+      <fieldset>
+        <input
+          formControlName="password"
+          type="password"
+          placeholder="Password"
+        />
+      </fieldset>
+      <button type="submit" [disabled]="data.isSubmitting">Sign up</button>
+    </form>
+  </div>
+</ng-container>

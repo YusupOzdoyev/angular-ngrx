@@ -4,13 +4,15 @@ import { Store } from "@ngrx/store";
 import { authActions } from "../../store/actions";
 import { RegisterRequestInterface } from "../../types/registerRequest.interface";
 import { RouterLink } from "@angular/router";
-import { AsyncPipe } from "@angular/common";
-import { selectIsSubmitting } from "../../store/reducer";
+import { AsyncPipe, NgIf } from "@angular/common";
+import { selectIsSubmitting, selectValidationErrors } from "../../store/reducer";
 import { AuthService } from "../../services/auth.service";
+import { combineLatest } from "rxjs";
+import { BackendErrors } from "../../../shared/components/backendErrors.component";
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, RouterLink, AsyncPipe],
+  imports: [NgIf, ReactiveFormsModule, RouterLink, AsyncPipe, BackendErrors],
   standalone: true,
   templateUrl: './register.component.html',
 })
@@ -20,7 +22,10 @@ export class RegisterComponent {
   private store = inject(Store);
   private authService = inject(AuthService);
 
-  public isSubmitting$ = this.store.select(selectIsSubmitting);
+  public data$ = combineLatest({
+    isSubmitting: this.store.select(selectIsSubmitting),
+    backendErrors: this.store.select(selectValidationErrors),
+  })
 
   public form = this.fb.nonNullable.group({
     username: ['', Validators.required],
